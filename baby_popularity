@@ -1,0 +1,250 @@
+<!--A Design by W3layouts
+Author: W3layout
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>BabY NameS</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link href="web/css/style.css" rel="stylesheet" type="text/css" media="all" />
+<link href='http://fonts.googleapis.com/css?family=Capriola' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div class="header-bg">
+<div class="wrap">
+<div class="logo">
+	<a href="index.html"><img src="web/images/logo.png" alt=""></a>
+</div>
+<div class="menu-main">
+	<ul class="dc_css3_menu">
+  <li><a href="index.php">Home</a></li>
+  <li><a href="index.php">Top Names Of the Year</a></li>  
+  	<li><a href="namepopularity.php">Names Ranking & Popularity Graph</a></li>
+  
+	</ul>
+</div>
+	<div class="clear"></div>
+</div>
+</div>  
+<div class="slider-bg">
+ <div class="wrap">
+ 	<div class="slider">
+		<img src="web/images/banner.jpg" alt="">
+	</div>
+	 <div class="header-txt">
+		<h2>BabY NameS <span>Top Names ,</span>Ranking & Graph</h2>
+		<p>Baby Names help to you easily find Unique Names For The baby </p>
+	</div>
+	<div class="clear"></div>
+</div>
+</div>
+<div class="cont-bg">
+<div class="wrap">
+	<div class="cont-main">
+	
+	<div class="cont-txt">
+		<p><marquee>Welcome to our BabY NameS&nbsp;&nbsp;</marquee><p>
+	</div>
+	<div class="clear"></div>
+	</div>
+	<div class="clear"></div>
+	<div class="border">	
+	<div class="cont-left">
+			<h4>Search ToP Names Of The Year : </h4>
+             <form align=center method="post">
+<pre>
+
+
+                                        Year:       <input type="text" pattern="[0-9]{4}" name="year" placeholder="1945-2013" required="" />
+
+                                        Name:     <input type="text" name="name"  list="name" placeholder="Name"/>
+      <datalist id="name"> </datalist>  
+                                        Gender:   <select name="gender" ><option value="male"> Male </option><option value="female"> Female </option></select> 
+
+                                                        <input type="submit" name="find" value="Show Popularity Graph & Popularity DATA"/>
+
+</pre>
+</form>
+
+
+<fieldset  >
+<legend></legend>
+
+
+<?php
+if(isset($_POST['find']))
+{
+    
+    require 'config.php';
+    $year= $_POST['year'];
+    $gender= $_POST['gender'];
+    $name=$_POST['name'];
+    if($year==-1)
+    {
+        echo "<script> alert('ohhh!!! Please select Year') </script>";
+    }
+    else
+    {
+    //
+    echo "<h3 style='text-align: right; color: red;'> * Popularity of your name given by no of births </h3>";
+     echo "<h3 style='text-align: right; color: red;'> * (=) means two or more name in the same rank. </h3>";
+    echo "<hr color=blue />";
+    echo "<hr color=blue />";
+    echo "<h2 style='text-align: center; color: brown;'>Your Name : $name &nbsp &nbsp &nbsp &nbsp Gender: $gender</h2><br />";
+    echo '<h2 style="font-weight: bold; text-align: center; font-size: 30;"> POPULARITY GRAPH </h2><br />';
+    $yeararr=array();
+    $popularity=array();
+    $rank=array();
+     $i=0;
+     
+     //Array Created
+     $temp=$year;
+     for($year;$year<=2013;$year++)
+    {
+        $yeararr[$i]=$year;
+        $table= $gender.'_'.$year;
+    
+    $qry="Select * from $table where Name='$name' ";
+    $result=@mysql_query($qry) or die(mysql_error());
+   
+    if(mysql_num_rows($result)>0)
+    {
+        $row=mysql_fetch_array($result);
+        $popularity[$i]=$row[1];
+        $rank[$i]=$row[2];
+    }
+    else
+    {        
+        $rank[$i]=0;
+        $popularity[$i]=0;
+    }
+    $i++;
+    }
+    //Graph Ploting
+     session_start();
+    $_SESSION['popularity']=$popularity;
+    $_SESSION['year']=$yeararr;
+    $_SESSION['name']=$name;
+
+
+    echo "<img src='GRAPH.php' style='alignment-adjust: central;'/>";
+
+     
+     
+    echo "<hr color=blue/><br />";
+   
+     echo '<h2 style="font-weight: bold; text-align: center; font-size: 30;"> POPULARITY DATA</h2><br />';
+    echo "<h3 style='font-weight: bold;' align=center >&nbsp  Year &nbsp &nbsp No. Of Birth &nbsp &nbsp Rank</h3>";
+    $year=$temp;
+    for($year;$year<=2013;$year++)
+    {
+    $table= $gender.'_'.$year;
+      
+    $qry="Select * from $table where Name='$name' ";
+    $result=@mysql_query($qry) or die(mysql_error());
+   
+    if(mysql_num_rows($result)>0)
+    {
+        $row=mysql_fetch_array($result);
+        echo "<h3 style=' align=center >&nbsp  $year &nbsp &nbsp&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp $row[1] &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp $row[2]</h3>";
+    
+        //echo "<br />&nbsp&nbsp".$year."&nbsp &nbsp &nbsp &nbsp".$row[1]."&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp".$row[2];
+        
+    }
+    else
+    {
+        echo "<h3 style=' align=center >&nbsp  $year &nbsp &nbsp&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 0 &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 0 </h3>";
+    
+    }
+    $i++;
+    }
+    
+    
+    echo "<hr color=blue /><br /><br />";
+    
+  
+}
+}
+
+?>
+            
+			
+	<div class="clear"></div>
+	</div>
+	<div class="cont-right"> 
+		<h4>Services</h4>
+	<div class="grid-nav">
+	<ul>
+		
+		<li><a href="index.php">Top Names</a></li>
+		<li><a href="namepopularity.php">Global ranking of your Names </a></li>
+		<li><a href="namepopularity.php">Popularity of your Names</a></li>
+		<li><a href="namepopularity.php">world Popularity Curve </a></li>
+	
+	</ul>	
+	</div>
+	</div>
+</div>
+	<div class="clear"></div>
+</div>
+</div>
+	<div class="clear"></div>
+<div class="footer-bg">
+<div class="wrap"> 
+<div class="f-grid">
+	<h4>Features</h4>
+	<nav>	
+		<ul>
+			<li><a href="">Website Features</a></li>
+			<li><a href="">Small Business Website</a></li>
+			<li><a href=""> Premimum House</a></li>
+			<li><a href="">Free Example Sites</a></li>
+		</ul>
+	</nav>
+</div>
+<div class="f-grid">
+	<h4>Latest News</h4>
+	<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
+	<a href="">4 hours ago</a>&nbsp;<span>by</span>&nbsp;<a href="">Smith</a>
+	<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget,</p>
+		<a href="">8 hours ago</a>&nbsp;<span>by</span>&nbsp;<a href="">Smith</a>
+</div>
+<div class="f-grid1">			
+	<h4>Contact</h4>
+   	<div class="footer-form">
+   		<form>
+	<span>UserName:&nbsp;</span><input type="text" value="" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = '';}"><br>
+	<span>password:&nbsp;&nbsp;</span><input type="password" value="">
+	<a>Message:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a><br>
+	<textarea value="" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = '';}"></textarea>
+	</form>
+	</div>  
+	<div class="f-button">
+	<a href="">Submit</a>
+	</div>   
+</div>
+	<div class="clear"></div>
+<div class="f-icons">
+<h4>Follow Us</h4>
+	<nav>
+	<ul>
+		<li><a href="#"><img src="web/images/facebook.png" title="facebook" alt=""></a></li>
+		<li><a href="#"><img src="web/images/twitter.png" title="twitter" alt="" ></a></li>
+		<li><a href="#"><img src="web/images/yahoo.png" title="yahoo" alt=""></a></li>
+		<li><a href="#"><img src="web/images/youtube.png" title="youtube" alt=""></a></li>
+		<li><a href="#"><img src="web/images/picasa.png" title="picasa" alt=""></a></li>
+		<li><a href="#"><img src="web/images/google.png" title="google" alt=""></a></li>
+	</ul>
+	</nav>
+</div>
+</div>
+</div>
+<div class="footer1">
+	<p class="link"><span>© All rights reserved | Designed by&nbsp; <a href="#"> ABC.inc</a></span></p>
+</div>
+</body>
+</html>
